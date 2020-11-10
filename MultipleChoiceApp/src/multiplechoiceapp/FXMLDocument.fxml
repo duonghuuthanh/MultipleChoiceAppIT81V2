@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="348.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="multiplechoiceapp.FXMLDocumentController">
+   <children>
+      <TextField fx:id="txtContent" />
+      <ComboBox fx:id="cbCategories" prefWidth="150.0" />
+      <HBox prefHeight="37.0" prefWidth="348.0">
+         <children>
+            <CheckBox fx:id="chkA" mnemonicParsing="false" text="A" />
+            <TextField fx:id="txtA" />
+         </children>
+      </HBox>
+      <HBox layoutX="10.0" layoutY="72.0" prefHeight="37.0" prefWidth="348.0">
+         <children>
+            <CheckBox fx:id="chkB" mnemonicParsing="false" text="B" />
+            <TextField fx:id="txtB" />
+         </children>
+      </HBox>
+      <HBox layoutX="10.0" layoutY="109.0" prefHeight="37.0" prefWidth="348.0">
+         <children>
+            <CheckBox fx:id="chkC" mnemonicParsing="false" text="C" />
+            <TextField fx:id="txtC" />
+         </children>
+      </HBox>
+      <HBox layoutX="10.0" layoutY="146.0" prefHeight="37.0" prefWidth="348.0">
+         <children>
+            <CheckBox fx:id="chkD" mnemonicParsing="false" text="D" />
+            <TextField fx:id="txtD" />
+         </children>
+      </HBox>
+      <HBox prefHeight="43.0" prefWidth="348.0">
+         <children>
+            <Button mnemonicParsing="false" onAction="#addQuestionHandler" text="THÊM CÂU HỎI" />
+         </children>
+      </HBox>
+   </children>
+</VBox>
