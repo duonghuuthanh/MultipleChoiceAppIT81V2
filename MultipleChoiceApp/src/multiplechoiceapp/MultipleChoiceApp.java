@@ -5,6 +5,7 @@
  */
 package multiplechoiceapp;
 
+import com.dht.services.Utils;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -26,6 +27,14 @@ public class MultipleChoiceApp extends Application {
         stage.setScene(scene);
         stage.show();
     }
+
+    @Override
+    public void stop() throws Exception {
+        Utils.getConn().close();
+        super.stop(); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    
 
     /**
      * @param args the command line arguments

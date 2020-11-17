@@ -5,11 +5,14 @@
  */
 package com.dht.services;
 
+import com.dht.pojo.Category;
 import com.dht.pojo.Choice;
 import com.dht.pojo.Question;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,6 +22,32 @@ import java.util.logging.Logger;
  * @author Admin
  */
 public class QuestionServices {
+    public static List<Question> getQuestions(String kw) throws SQLException {
+        Connection conn = Utils.getConn();
+        String sql = "SELECT * FROM question";
+        if (kw != null && !kw.trim().isEmpty())
+            sql += " WHERE content like ?";
+        
+        PreparedStatement stm = conn.prepareStatement(sql);
+        if (kw != null && !kw.trim().isEmpty())
+            stm.setString(1, String.format("%%%s%%", kw.trim()));
+        
+        ResultSet rs = stm.executeQuery();
+        
+        List<Question> questions = new ArrayList<>();
+        while (rs.next()) {
+            String id = rs.getString("id");
+            String content = rs.getString("content");
+            int cateId = rs.getInt("category_id");
+            Category c = new Category(cateId);
+            Question q = new Question(id, content, c);
+            
+            questions.add(q);
+        }
+        
+        return questions;
+    }
+    
     public static boolean addQuestion(Question q, List<Choice> choices) {
         Connection conn = Utils.getConn();
         try {

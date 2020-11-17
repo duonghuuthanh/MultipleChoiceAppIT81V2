@@ -18,6 +18,7 @@ import java.util.ResourceBundle;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -25,7 +26,10 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 
 /**
  *
@@ -42,15 +46,23 @@ public class FXMLDocumentController implements Initializable {
     @FXML private CheckBox chkB;
     @FXML private CheckBox chkC;
     @FXML private CheckBox chkD;
+    @FXML private TableView<Question> tbQuestions;
+    @FXML TextField txtKeyword;
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        buildTable();
         try {
             // TODO
             cbCategories.getItems().addAll(CategoryServices.getCategories());
+            loadQuestions("");
         } catch (SQLException ex) {
             Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
+        txtKeyword.textProperty().addListener(evt -> {
+            loadQuestions(txtKeyword.getText());
+        });
     }    
     
     public void addQuestionHandler(ActionEvent evt) {
@@ -70,11 +82,32 @@ public class FXMLDocumentController implements Initializable {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         if (QuestionServices.addQuestion(q, choices) == true) {
             alert.setContentText("SUCCESSFUL");
+            loadQuestions("");
         } else {
             alert.setContentText("FAILED");
         }
         
         alert.show();
+    }
+    
+    private void buildTable() {
+        TableColumn colId = new TableColumn("Mã câu hỏi");
+        colId.setCellValueFactory(new PropertyValueFactory("id"));
+        
+        TableColumn colContent = new TableColumn("Nội dung câu hỏi");
+        colContent.setCellValueFactory(new PropertyValueFactory("content"));
+        
+        tbQuestions.getColumns().addAll(colId, colContent);
+    }
+    
+    private void loadQuestions(String kw) {
+        try {
+//            tbQuestions.getItems().clear();
+            tbQuestions.setItems(FXCollections.observableArrayList(QuestionServices.getQuestions(kw)));
+        } catch (SQLException ex) {
+            Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
     }
     
 }
