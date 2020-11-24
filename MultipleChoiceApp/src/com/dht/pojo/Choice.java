@@ -14,6 +14,12 @@ public class Choice {
     private String content;
     private Question question;
     private boolean correct;
+    
+    public Choice(String id, String content, boolean correct) {
+        this.id = id;
+        this.content = content;
+        this.correct = correct;
+    }
 
     public Choice(String id, String content, Question question, boolean correct) {
         this.id = id;

@@ -5,6 +5,7 @@
  */
 package com.dht.tester01;
 
+import com.dht.pojo.Choice;
 import com.dht.pojo.Question;
 import com.dht.services.QuestionServices;
 import com.dht.services.Utils;
@@ -76,5 +77,23 @@ public class QuestionTester {
             Logger.getLogger(QuestionTester.class.getName()).log(Level.SEVERE, null, ex);
         }
         
+    }
+    
+    @Test
+    public void testDeleteSuccessful() {
+        try {
+            String questionId = "24877fc3-de59-4acc-81dc-3e7a0c1012df";
+            
+            boolean kq = QuestionServices.deleteQuestion(questionId);
+            Assert.assertTrue(kq);
+            
+            Question q = QuestionServices.getQuestionById(questionId);
+            Assert.assertNull(q);
+            
+            List<Choice> choices = QuestionServices.getChoicesByQuestionId(questionId);
+            Assert.assertEquals(0, choices.size());
+        } catch (SQLException ex) {
+            Logger.getLogger(QuestionTester.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

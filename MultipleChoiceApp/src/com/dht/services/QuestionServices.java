@@ -22,8 +22,44 @@ import java.util.logging.Logger;
  * @author Admin
  */
 public class QuestionServices {
+    private static Connection conn = Utils.getConn();
+    
+    public static Question getQuestionById(String id) throws SQLException {
+        String sql = "SELECT * FROM question WHERE id=?";
+        
+        PreparedStatement stm = conn.prepareStatement(sql);
+        stm.setString(1, id);
+        
+        ResultSet rs = stm.executeQuery();
+        while (rs.next())
+            return new Question(rs.getString("id"), 
+                    rs.getString("content"),
+                    CategoryServices.getCategoryById(rs.getInt("category_id")));
+        
+        return null;
+    }
+    
+    public static List<Choice> getChoicesByQuestionId(String questionId) throws SQLException {  
+        String sql = "SELECT * FROM choice WHERE question_id=?";
+        PreparedStatement stm = conn.prepareStatement(sql);
+        stm.setString(1, questionId);
+        
+        ResultSet rs = stm.executeQuery();
+        List<Choice> choices = new ArrayList<>();
+        while (rs.next()) {
+            String id = rs.getString("id");
+            String content = rs.getString("content");
+            boolean correct = rs.getBoolean("is_correct");
+            
+            Choice c = new Choice(id, content, correct);
+            
+            choices.add(c);
+        }
+        
+        return choices;
+    }
+    
     public static List<Question> getQuestions(String kw) throws SQLException {
-        Connection conn = Utils.getConn();
         String sql = "SELECT * FROM question";
         if (kw != null && !kw.trim().isEmpty())
             sql += " WHERE content like ?";
@@ -39,8 +75,9 @@ public class QuestionServices {
             String id = rs.getString("id");
             String content = rs.getString("content");
             int cateId = rs.getInt("category_id");
-            Category c = new Category(cateId);
-            Question q = new Question(id, content, c);
+            
+            Question q = new Question(id, content, 
+                    new Category(cateId));
             
             questions.add(q);
         }
@@ -48,8 +85,18 @@ public class QuestionServices {
         return questions;
     }
     
+    public static boolean deleteQuestion(String questionId) throws SQLException {
+        String sql = "DELETE FROM question WHERE id=?";
+        
+        PreparedStatement stm = conn.prepareStatement(sql);
+        stm.setString(1, questionId);
+        
+        int kq = stm.executeUpdate();
+        
+        return kq > 0;
+    }
+    
     public static boolean addQuestion(Question q, List<Choice> choices) {
-        Connection conn = Utils.getConn();
         try {
             conn.setAutoCommit(false);
             String sql = "INSERT INTO question(id, content, category_id)"
